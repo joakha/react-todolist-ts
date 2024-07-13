@@ -5,9 +5,11 @@ import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Stack from '@mui/material/Stack';
 import SendIcon from '@mui/icons-material/Send';
+import DeleteIcon from '@mui/icons-material/Delete';
 import { ColDef } from "ag-grid-community";
 import { Todo } from "../interfaces/interfaces";
 import { Dayjs } from "dayjs";
+import { CustomCellRendererProps } from "ag-grid-react";
 
 const TodoList = (): ReactElement => {
 
@@ -24,7 +26,8 @@ const TodoList = (): ReactElement => {
         {
             field: 'date', filter: true, floatingFilter: true,
             valueFormatter: (params) => new Date(params.value).toLocaleDateString("fi-FI")
-        }
+        },
+        { cellRenderer: (params: CustomCellRendererProps) => <Button startIcon={<DeleteIcon />} color="error" variant="outlined" onClick={() => deleteTodo(params.data.id)}>Delete</Button> }
     ];
 
     const handleChange = (event: ChangeEvent<HTMLInputElement>): void => {
@@ -42,24 +45,25 @@ const TodoList = (): ReactElement => {
         }
 
         const id: number = todos.length ? todos[todos.length - 1].id as number + 1 : 0;
-        const newTodo: Todo = {...todo, id: id};
+        const newTodo: Todo = { ...todo, id: id };
 
         setTodos(prevTodos => {
             const updatedTodos: Todo[] = [...prevTodos, newTodo];
             saveTodos(updatedTodos);
             return updatedTodos;
         });
-        console.log(newTodo.id);
         setTodo({ id: null, description: "", priority: "", date: null });
     };
 
-    /*const deleteTodo = (id: number): void => {
-        setTodos(prevTodos => {
-            const updatedTodos: Todo[] = prevTodos.filter(todo => todo.id !== id);
-            saveTodos(updatedTodos);
-            return updatedTodos;
-        })
-    }*/
+    const deleteTodo = (id: number): void => {
+        if (confirm("Are you sure?")) {
+            setTodos(prevTodos => {
+                const updatedTodos: Todo[] = prevTodos.filter(todo => todo.id !== id);
+                saveTodos(updatedTodos);
+                return updatedTodos;
+            })
+        }
+    }
 
     const saveTodos = (tobeSavedTodos: Todo[]): void => {
         localStorage.setItem("todolist", JSON.stringify(tobeSavedTodos));
