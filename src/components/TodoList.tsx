@@ -1,4 +1,4 @@
-import { ChangeEvent, ReactElement, useState } from "react";
+import { ChangeEvent, ReactElement, useEffect, useState } from "react";
 import TodoTable from "./TodoTable";
 import { DatePicker } from "@mui/x-date-pickers";
 import Button from '@mui/material/Button';
@@ -41,9 +41,18 @@ const TodoList = (): ReactElement => {
             return;
         }
 
-        setTodos([...todos, todo]);
+        setTodos(prevTodos => {
+            const updatedTodos = [...prevTodos, todo];
+            localStorage.setItem("todos", JSON.stringify(updatedTodos));
+            return updatedTodos;
+        });
         setTodo({ description: "", priority: "", date: null });
     };
+
+    useEffect(() => {
+        const storageTodos: string | null = localStorage.getItem("todos");
+        if (storageTodos) setTodos(JSON.parse(storageTodos));
+    }, []);
 
     return (
         <>
