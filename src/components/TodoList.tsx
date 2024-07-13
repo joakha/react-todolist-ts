@@ -11,7 +11,7 @@ import { Dayjs } from "dayjs";
 
 const TodoList = (): ReactElement => {
 
-    const [todo, setTodo] = useState<Todo>({ description: "", priority: "", date: null });
+    const [todo, setTodo] = useState<Todo>({ id: null, description: "", priority: "", date: null });
     const [todos, setTodos] = useState<Todo[]>([]);
 
     const columnDefs: ColDef[] = [
@@ -41,16 +41,32 @@ const TodoList = (): ReactElement => {
             return;
         }
 
+        const id: number = todos.length ? todos[todos.length - 1].id as number + 1 : 0;
+        const newTodo: Todo = {...todo, id: id};
+
         setTodos(prevTodos => {
-            const updatedTodos = [...prevTodos, todo];
-            localStorage.setItem("todos", JSON.stringify(updatedTodos));
+            const updatedTodos: Todo[] = [...prevTodos, newTodo];
+            saveTodos(updatedTodos);
             return updatedTodos;
         });
-        setTodo({ description: "", priority: "", date: null });
+        console.log(newTodo.id);
+        setTodo({ id: null, description: "", priority: "", date: null });
     };
 
-    useEffect(() => {
-        const storageTodos: string | null = localStorage.getItem("todos");
+    /*const deleteTodo = (id: number): void => {
+        setTodos(prevTodos => {
+            const updatedTodos: Todo[] = prevTodos.filter(todo => todo.id !== id);
+            saveTodos(updatedTodos);
+            return updatedTodos;
+        })
+    }*/
+
+    const saveTodos = (tobeSavedTodos: Todo[]): void => {
+        localStorage.setItem("todolist", JSON.stringify(tobeSavedTodos));
+    }
+
+    useEffect((): void => {
+        const storageTodos: string | null = localStorage.getItem("todolist");
         if (storageTodos) setTodos(JSON.parse(storageTodos));
     }, []);
 
