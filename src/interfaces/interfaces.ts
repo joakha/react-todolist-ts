@@ -1,5 +1,5 @@
-import { ColDef } from "ag-grid-community";
 import { Dayjs } from "dayjs";
+import { ReactElement } from "react";
 
 export interface Todo {
     id: number | null,
@@ -8,7 +8,6 @@ export interface Todo {
     date: Dayjs | null
 }
 
-export interface TodoTableProps {
-    data: Todo[],
-    columns: ColDef[],
+export interface ChildrenType {
+    children?: ReactElement | ReactElement[]
 }

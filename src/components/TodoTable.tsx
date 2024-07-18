@@ -1,16 +1,18 @@
 import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/styles/ag-grid.css";
-import "ag-grid-community/styles/ag-theme-material.css"; // Material Design theme
-import { TodoTableProps } from "../interfaces/interfaces";
-import { ReactElement } from "react";
+import "ag-grid-community/styles/ag-theme-material.css";
+import { ReactElement, useContext } from "react";
+import TodoContext from "../context/todoprovider";
 
-const TodoTable = ({ data, columns }: TodoTableProps): ReactElement => {
+const TodoTable = (): ReactElement => {
+
+    const { todos, columnDefs } = useContext(TodoContext);
 
     return (
         <div className="ag-theme-material" style={{ width: 800, height: 1000 }}>
             <AgGridReact
-                rowData={data}
-                columnDefs={columns}
+                rowData={todos}
+                columnDefs={columnDefs}
             />
         </div>
     )
